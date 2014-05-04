@@ -1,0 +1,33 @@
+{
+    "name":         "kyoushu/foundation-bundle",
+    "description":  "Integrates zurb/foundation into Symfony",
+    "keywords":     ["zurb", "foundation"],
+    "type":         "symfony-bundle",
+    "license":      "GPL-2.0+",
+    "authors":     [
+        {
+            "name":     "James Willans",
+            "email":    "kyoushu@gmail.com"
+        }
+    ],
+    "require":      {
+        "php":                      ">=5.3.3",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/twig-bundle":      "~2.3",
+        "symfony/form":             "~2.3",
+        "symfony/console":          "~2.3",
+        
+        "leafo/scssphp":            "~0.0.10",
+        "zurb/foundation":          "~5.2",
+        "components/jquery":        "~2.1",
+        "components/modernizr":     "~2.6",
+        "components/normalize.css": "~2.1"
+    },
+    "require-dev": {
+        "symfony/assetic-bundle":       "~2.3"
+    },
+    "autoload": {
+        "psr-0": { "Kyoushu\\FoundationBundle": "" }
+    },
+    "target-dir": "Kyoushu/FoundationBundle"
+}

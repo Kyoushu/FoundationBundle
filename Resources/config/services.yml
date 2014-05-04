@@ -1,0 +1,13 @@
+parameters:
+#    kyoushu_foundation.example.class: Kyoushu\FoundationBundle\Example
+
+services:
+    kyoushu_foundation.assetic_controller:
+        class: Kyoushu\FoundationBundle\Controller\AsseticController
+        arguments: ['@assetic.asset_manager']
+        
+    kyoushu_foundation.assetic_listener:
+        class: Kyoushu\FoundationBundle\EventListener\AsseticListener
+        arguments: ['@kyoushu_foundation.assetic_controller']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onController }
