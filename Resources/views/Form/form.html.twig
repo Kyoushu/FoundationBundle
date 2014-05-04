@@ -1,0 +1,230 @@
+{% macro form_label(form, containing_widget) %}
+{% spaceless %}
+    
+    {% set label = form.vars.label %}
+    {% set compound = form.vars.compound %}
+    {% set label_attr = form.vars.label_attr %}
+    {% set id = form.vars.id %}
+    {% set required = form.vars.required %}
+    {% set name = form.vars.name %}
+    {% set translation_domain = form.vars.translation_domain %}
+    
+    {% if containing_widget is not defined %}
+        {% set containing_widget = true %}
+    {% endif %}
+    
+    {% if label is not sameas(false) %}
+        {% if not compound %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {% endif %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{- label|trans({}, translation_domain) -}}
+            {%- if containing_widget %} {{ form_widget(form) }}{% endif -%}
+        </label>
+    {% endif %}
+        
+{% endspaceless %}
+{% endmacro %}
+
+{% block form_row %}
+{% spaceless %}
+    
+    {% set is_expanded_choice = (
+        'choice' in form.vars.block_prefixes and
+        form.vars.expanded is defined and
+        form.vars.expanded == true
+    ) %}
+    
+    <div class="row">
+        <div class="large-12 columns{{ errors|length > 0 ? ' errors' }}">
+            {{ form_label(form) }}
+            {% if is_expanded_choice %}
+                {{ form_widget(form) }}
+                
+            {% endif %}
+            {{ form_errors(form) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+{% spaceless %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            <small class="error">{{ error.message }}</small>
+        {% endfor %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_errors %}
+
+{% block form_label %}
+{% spaceless %}
+    
+    {% set is_expanded_choice = (
+        'choice' in form.vars.block_prefixes and
+        form.vars.expanded is defined and
+        form.vars.expanded == true
+    ) %}
+    
+    {% set containing_widget = not is_expanded_choice %}
+    
+    {{ _self.form_label(form, containing_widget) }}
+    
+{% endspaceless %}
+{% endblock form_label %}
+    
+{% block form_widget_compound %}
+{% spaceless %}
+    {% if form.parent is empty %}
+        {{ form_errors(form) }}
+    {% endif %}
+    {{ block('form_rows') }}
+    {{ form_rest(form) }}
+{% endspaceless %}
+{% endblock form_widget_compound %}
+
+{% block choice_widget_expanded %}
+{% spaceless %}
+    {% for child in form %}
+        {{ form_widget(child) }}
+        {{ form_label(child) }}
+    {% endfor %}
+{% endspaceless %}
+{% endblock choice_widget_expanded %}
+
+{% block money_row %}
+{% spaceless %}
+    <div class="row collapse">
+        {{ _self.form_label(form, false) }}
+        <div class="small-2 columns">
+            <span class="prefix">{{ money_pattern|replace({'{{ widget }}': ''})|trim }}</span>
+        </div>
+        <div class="small-10 columns">
+            {{ form_widget(form) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock money_row %}
+
+{% block percent_row %}
+{% spaceless %}
+    <div class="row collapse">
+        {{ _self.form_label(form, false) }}
+        <div class="small-10 columns">
+            {{ form_widget(form) }}
+        </div>
+        <div class="small-2 columns">
+            <span class="postfix">{{ '%' }}</span>
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock percent_row %}
+
+{% block money_widget %}
+{% spaceless %}
+    {{ block('form_widget_simple') }}
+{% endspaceless %}
+{% endblock money_widget %}
+
+{% block percent_widget %}
+{% spaceless %}
+    {{ block('form_widget_simple') }}
+{% endspaceless %}
+{% endblock percent_widget %}
+
+{% block widget_attributes %}
+{% spaceless %}
+    
+    {% if errors|length > 0 %}
+        {% set attr = attr|merge({
+            class: (attr.class|default('') ~ ' error')|trim
+        }) %}
+    {% endif %}
+    
+    id="{{ id }}" name="{{ full_name }}"    
+    {%- if read_only %} readonly="readonly"{% endif -%}
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+    {%- for attrname, attrvalue in attr -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+        {%- elseif attrvalue is sameas(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not sameas(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+    
+{% endspaceless %}
+{% endblock widget_attributes %}
+    
+{% block date_widget %}
+{% spaceless %}
+    {% if widget == 'single_text' %}
+        {{ block('form_widget_simple') }}
+    {% else %}
+        <div class="row">
+            {{ date_pattern|replace({
+                '{{ year }}':  '<div class="medium-4 columns">' ~ form_widget(form.year) ~ '</div>',
+                '{{ month }}': '<div class="medium-4 columns">' ~ form_widget(form.month) ~ '</div>',
+                '{{ day }}':   '<div class="medium-4 columns">' ~ form_widget(form.day) ~ '</div>',
+            })|raw }}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock date_widget %}
+
+{% block time_widget %}
+{% spaceless %}
+    {% if widget == 'single_text' %}
+        {{ block('form_widget_simple') }}
+    {% else %}
+        
+        {% set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} %}
+            
+        {% if with_minutes and with_seconds %}
+            {% set num_columns = 4 %}
+        {% elseif with_minutes %}
+            {% set num_columns = 6 %}
+        {% else %}
+            {% set num_columns = 12 %}
+        {% endif %}
+            
+        <div class="row">
+            <div class="medium-{{ num_columns }} columns">
+                {{ form_widget(form.hour, vars) }}
+            </div>
+            
+            {% if with_minutes %}
+                <div class="medium-{{ num_columns }} columns">
+                    {{ form_widget(form.minute, vars) }}
+                </div>
+            {% endif %}
+            
+            {% if with_seconds %}
+                <div class="medium-{{ num_columns }} columns">
+                    {{ form_widget(form.second, vars) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock time_widget %}
+    
+{% block button_row %}
+{% spaceless %}
+    <div class="row">
+        <div class="large-12 columns">
+            {{ form_widget(form) }}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock button_row %}
