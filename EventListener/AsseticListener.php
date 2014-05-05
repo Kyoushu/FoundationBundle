@@ -8,12 +8,21 @@ use Kyoushu\FoundationBundle\Controller\AsseticController;
 class AsseticListener{
     
     private $asseticController;
+    private $forceRebuildStylesheets;
     
     public function __construct(AsseticController $asseticController){
         $this->asseticController = $asseticController;
+        $this->forceRebuildStylesheets = false;
+    }
+    
+    public function setForceRebuildStylesheets($forceRebuildStylesheets){
+        $this->forceRebuildStylesheets = (bool)$forceRebuildStylesheets;
+        return $this;
     }
     
     public function onController(FilterControllerEvent $event){
+        
+        if(!$this->forceRebuildStylesheets) return;
         
         $controller = $event->getController();
         $request = $event->getRequest();

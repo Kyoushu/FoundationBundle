@@ -24,6 +24,9 @@ class KyoushuFoundationExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+                
+        $asseticListenerDefinition = $container->getDefinition('kyoushu_foundation.assetic_listener');
+        $asseticListenerDefinition->addMethodCall('setForceRebuildStylesheets', array($config['force_rebuild_stylesheets']));
         
     }
 }
