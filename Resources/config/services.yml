@@ -2,12 +2,12 @@ parameters:
 #    kyoushu_foundation.example.class: Kyoushu\FoundationBundle\Example
 
 services:
-    kyoushu_foundation.assetic_controller:
-        class: Kyoushu\FoundationBundle\AsseticController
+    kyoushu_foundation.assetic_controller_substitute:
+        class: Kyoushu\FoundationBundle\AsseticControllerSubstitute
         arguments: ['@assetic.asset_manager']
         
     kyoushu_foundation.assetic_listener:
         class: Kyoushu\FoundationBundle\EventListener\AsseticListener
-        arguments: ['@kyoushu_foundation.assetic_controller']
+        arguments: ['@kyoushu_foundation.assetic_controller_substitute']
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onController }

@@ -6,7 +6,7 @@ use Assetic\Factory\LazyAssetManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AsseticController{
+class AsseticControllerSubstitute{
     
     private $am;
     

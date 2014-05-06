@@ -3,14 +3,14 @@
 namespace Kyoushu\FoundationBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Kyoushu\FoundationBundle\AsseticController;
+use Kyoushu\FoundationBundle\AsseticControllerSubstitute;
 
 class AsseticListener{
     
     private $asseticController;
     private $forceRebuildStylesheets;
     
-    public function __construct(AsseticController $asseticController){
+    public function __construct(AsseticControllerSubstitute $asseticController){
         $this->asseticController = $asseticController;
         $this->forceRebuildStylesheets = false;
     }
