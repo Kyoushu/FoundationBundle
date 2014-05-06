@@ -3,7 +3,7 @@ parameters:
 
 services:
     kyoushu_foundation.assetic_controller:
-        class: Kyoushu\FoundationBundle\Controller\AsseticController
+        class: Kyoushu\FoundationBundle\AsseticController
         arguments: ['@assetic.asset_manager']
         
     kyoushu_foundation.assetic_listener:

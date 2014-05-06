@@ -1,6 +1,6 @@
 <?php
 
-namespace Kyoushu\FoundationBundle\Controller;
+namespace Kyoushu\FoundationBundle;
 
 use Assetic\Factory\LazyAssetManager;
 use Symfony\Component\HttpFoundation\Response;

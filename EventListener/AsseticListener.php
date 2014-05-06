@@ -3,7 +3,7 @@
 namespace Kyoushu\FoundationBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Kyoushu\FoundationBundle\Controller\AsseticController;
+use Kyoushu\FoundationBundle\AsseticController;
 
 class AsseticListener{
     
