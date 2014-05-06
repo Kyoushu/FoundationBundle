@@ -1,3 +1,0 @@
-kyoushu_foundation_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: KyoushuFoundationBundle:Default:index }
